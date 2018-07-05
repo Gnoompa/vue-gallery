@@ -7,6 +7,8 @@ export default {
   plugins: [
     vue({ css: true }),
     babel({ 
+        babelrc: false,
+        presets: [['env', { modules: false }]],
         exclude: 'node_modules/**',
         runtimeHelpers: true,
         externalHelpers: false

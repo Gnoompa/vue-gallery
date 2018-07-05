@@ -309,12 +309,9 @@
     __vue_render__$1._withStripped = true;
 
     /* style */
-    var __vue_inject_styles__$1 = function (inject) {
-      if (!inject) return;
-      inject("data-v-80ba75d6_0", { source: "\n.grid[data-v-80ba75d6] {\n  display: flex;\n}\n", map: { "version": 3, "sources": ["/Users/dmitryevdokimenko/Documents/tests/vue-gallery/app/src/components/src/components/Gallery.vue"], "names": [], "mappings": ";AAwEA;EACA,cAAA;CACA", "file": "Gallery.vue", "sourcesContent": ["<template>\n  <main @drop.prevent.stop @dragover.prevent.stop>\n    <slot name=\"grid\">\n        <Cell v-for=\"(image, key) in images\" :image=\"image\" :key=\"key\" @dropped=\"ondropped\" />\n    </slot>\n  </main>\n</template>\n\n<script>\n  import Cell from './Cell.vue'\n\n  export default {\n    props: {\n      images: Array\n    },\n    computed: {\n      payload () {\n        return {\n          images: this.images,\n          process: this.process\n        }\n      }\n    },\n    methods: {\n      ondropped (files, process_image) {\n        return new Promise((resolve, reject) => {\n          if (this._events.ondrop)\n            this.$emit('ondrop', {\n              file: files[0],\n              cb: file => this.process_file(file).then(image => this.add_image(image, process_image(image)) && resolve())\n            })\n          else {\n            this.process_file(files[0])\n              .then(image => this.add_image(image, process_image(image)) && resolve())\n          }\n        })\n      },\n      process_file (file) {\n        var image = {}\n\n        return new Promise((resolve, reject) => {\n           let [_file, error] = this.validate(file)\n\n            if (error) reject(this.error(error))\n            else {\n                const reader = new FileReader()\n\n                reader.onload = event => this.$set(image, 'src', event.target.result) && resolve(image)\n\n                reader.readAsDataURL(file)\n            }\n        })\n      },\n      validate (file) {\n          return typeof file === 'object' && file.type ? [file] : [file, { msg: 'Invalid file', file }]\n      },\n      error (msg) {\n          return console.error(msg) && this\n      },\n      add_image (image, cell) {\n        cell.order !== undefined ? this.$set(this.images, cell.order, image) : this.images.push(image)\n\n        return this\n      }\n    },\n    components: {\n      Cell\n    }\n  }\n</script>\n\n<style scoped>\n  .grid {\n    display: flex;\n  }\n</style>"] }, media: undefined });
-    };
+    var __vue_inject_styles__$1 = undefined;
     /* scoped */
-    var __vue_scope_id__$1 = "data-v-80ba75d6";
+    var __vue_scope_id__$1 = undefined;
     /* module identifier */
     var __vue_module_identifier__$1 = undefined;
     /* functional template */
@@ -336,30 +333,6 @@
       }
 
       component._scopeId = scope;
-
-      {
-        var hook = void 0;
-        if (style) {
-          hook = function hook(context) {
-            style.call(this, createInjector(context));
-          };
-        }
-
-        if (hook !== undefined) {
-          if (component.functional) {
-            // register for functional component in vue file
-            var originalRender = component.render;
-            component.render = function renderWithStyleInjection(h, context) {
-              hook.call(context);
-              return originalRender(h, context);
-            };
-          } else {
-            // inject component registration as beforeCreate hook
-            var existing = component.beforeCreate;
-            component.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-          }
-        }
-      }
 
       return component;
     }
