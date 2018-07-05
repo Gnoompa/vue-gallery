@@ -1,6 +1,6 @@
 {
   "name": "vuejs-gallery",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Vue gallery",
   "main": "dist/vuejs-gallery.js",
   "scripts": {
