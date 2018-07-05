@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Cell from './components/Cell.vue'
+  import Cell from './Cell.vue'
 
   export default {
     props: {
@@ -57,7 +57,7 @@
       error (msg) {
           return console.error(msg) && this
       },
-      add_image (image, cell) {        
+      add_image (image, cell) {
         cell.order !== undefined ? this.$set(this.images, cell.order, image) : this.images.push(image)
 
         return this

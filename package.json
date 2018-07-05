@@ -1,0 +1,38 @@
+{
+  "name": "vuejs-gallery",
+  "version": "1.0.0",
+  "description": "Vue gallery",
+  "main": "dist/vuejs-gallery.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node_modules/.bin/rollup -c && NODE_ENV=production node_modules/.bin/rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gnoompa/vue-gallery.git"
+  },
+  "keywords": [
+    "vue",
+    "gallery"
+  ],
+  "author": {
+    "name": "Gnoompa",
+    "email": "gnoompa@gmail.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gnoompa/vue-gallery/issues"
+  },
+  "homepage": "https://github.com/Gnoompa/vue-gallery#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "rollup": "^0.62.0",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-uglify": "^4.0.0",
+    "rollup-plugin-vue": "^4.3.0"
+  }
+}
