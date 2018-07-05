@@ -68,9 +68,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .grid {
-    display: flex;
-  }
-</style>
