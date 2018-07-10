@@ -11,7 +11,8 @@
 
   export default {
     props: {
-      images: Array
+      images: Array,
+      editable: Boolean
     },
     computed: {
       payload () {
@@ -24,15 +25,28 @@
     methods: {
       ondropped (files, process_image) {
         return new Promise((resolve, reject) => {
-          if (this._events.ondrop)
-            this.$emit('ondrop', {
-              file: files[0],
-              cb: file => this.process_file(file).then(image => this.add_image(image, process_image(image)) && resolve())
+          if (this.editable) {
+            if (this._events.ondrop)
+              this.$emit('ondrop', {
+                file: files[0],
+                cb: file => this.process_file(file).then(image => this.add_image(image, process_image(image)) && resolve())
+              })
+            else {
+              this.process_file(files[0])
+                .then(image => this.add_image(image, process_image(image)) && resolve())
+            }
+          } else resolve()
+        })
+      },
+      onremove (cell) {
+        return new Promise((resolve, reject) => {
+          if (this._events.onremove)
+            this.$emit('onremove', {
+              image: cell.image,
+              cb: () => this.remove_image(cell) && resolve()
             })
-          else {
-            this.process_file(files[0])
-              .then(image => this.add_image(image, process_image(image)) && resolve())
-          }
+          else
+            this.remove_image(cell) & resolve()
         })
       },
       process_file (file) {
@@ -58,9 +72,12 @@
           return console.error(msg) && this
       },
       add_image (image, cell) {
-        cell.order !== undefined ? this.$set(this.images, cell.order, image) : this.images.push(image)
+        this.images.push(cell.image = image)
 
         return this
+      },
+      remove_image (cell) {
+        cell.image = null
       }
     },
     components: {
