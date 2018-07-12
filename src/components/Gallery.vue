@@ -23,17 +23,18 @@
       }
     },
     methods: {
-      ondropped (files, process_image) {
+      ondropped (file, cell) {
         return new Promise((resolve, reject) => {
           if (this.editable) {
             if (this._events.ondrop)
               this.$emit('ondrop', {
-                file: files[0],
-                cb: file => this.process_file(file).then(image => this.add_image(image, process_image(image)) && resolve())
+                file,
+                cell,
+                cb: file => this.process_file(file).then(image => this.add_image(image, cell) && resolve())
               })
             else {
-              this.process_file(files[0])
-                .then(image => this.add_image(image, process_image(image)) && resolve())
+              this.process_file(file)
+                .then(image => this.add_image(image, cell) && resolve())
             }
           } else resolve()
         })
@@ -72,12 +73,14 @@
           return console.error(msg) && this
       },
       add_image (image, cell) {
-        this.images.push(cell.image = image)
+        cell.image = image
 
         return this
       },
       remove_image (cell) {
-        cell.image = null
+        delete this.images[this.images.indexOf(cell.image)]
+
+        return this
       }
     },
     components: {

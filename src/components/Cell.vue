@@ -50,7 +50,7 @@
             ondrop (event) {
                 this.process()
 
-                this.$parent.ondropped(event.dataTransfer.files, image => this).finally(this.unprocess)
+                this.$parent.ondropped(event.dataTransfer.files[0], this).finally(this.unprocess)
 
                 this.highlighted = false
             },
