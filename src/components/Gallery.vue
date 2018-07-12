@@ -73,7 +73,7 @@
           return console.error(msg) && this
       },
       add_image (image, cell) {
-        cell.image = image
+        this.images.push(cell.image = image)
 
         return this
       },
