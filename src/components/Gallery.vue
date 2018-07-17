@@ -38,17 +38,17 @@
       },
       process_file (file) {
         return new Promise((resolve, reject) =>
-          (reader =>
-            reader.onload = event => resolve({ src: event.target.result }) &
+          (reader => {
+            reader.onload = event => resolve({ src: event.target.result })
             reader.readAsDataURL(file)
-          )(new FileReader())
+          })(new FileReader())
         )
       },
       add_image (image, cell) {
-        this.images[this.images.indexOf(cell.image)] = image
+        this.$set(this.images, this.images.indexOf(cell.image), image)
       },
       remove_image (cell) {
-        delete this.images[this.images.indexOf(cell.image)]
+        this.$delete(this.images, this.images.indexOf(cell.image))
       }
     }
   }
