@@ -23,11 +23,13 @@
 
 <script>
     export default {
+        props: {
+            image: false
+        },
         data () {
             return {
                 highlighted: false,
-                processing: false,
-                image: undefined
+                processing: false
             }
         },
         computed: {
@@ -38,21 +40,43 @@
             },
             empty () {
                 return !this.image
+            },
+            editable () {
+                return this.$parent.editable
             }
         },
         methods: {
-            ondragenter () {
+            process () {
+                this.processing = true
+
+                return this
+            },
+            unprocess () {
+                this.processing = false
+
+                return this
+            },
+            highlight () {
                 this.highlighted = true
+
+                return this
+            },
+            unhighlight () {
+                this.highlighted = false
+
+                return this
+            },
+            ondragenter () {
+                this.highlight()
             },
             ondragleave () {
-                this.highlighted = false
+                this.unhighlight()
             },
             ondrop (event) {
-                this.process()
-
-                this.$parent.ondropped(event.dataTransfer.files[0], this).finally(this.unprocess)
-
-                this.highlighted = false
+                if (this.editable)
+                    this.process()
+                        .$parent.ondropped(event.dataTransfer.files[0], this)
+                        .finally(this.unprocess & this.unhighlight)
             },
             onremove () {
                 this.process()
@@ -60,12 +84,6 @@
                 this.$parent.onremove(this).finally(this.unprocess)
 
                 this.highlighted = false
-            },
-            process () {
-                this.processing = true
-            },
-            unprocess () {
-                this.processing = false
             }
         }
     }

@@ -1,14 +1,10 @@
 <template>
   <main @drop.prevent.stop @dragover.prevent.stop>
-    <slot name="grid">
-        <Cell v-for="(image, key) in images" :image="image" :key="key" @dropped="ondropped" />
-    </slot>
+    <slot></slot>
   </main>
 </template>
 
 <script>
-  import Cell from './Cell.vue'
-
   export default {
     props: {
       images: Array,
@@ -24,67 +20,36 @@
     },
     methods: {
       ondropped (file, cell) {
-        return new Promise((resolve, reject) => {
-          if (this.editable) {
-            if (this._events.ondrop)
-              this.$emit('ondrop', {
-                file,
-                cell,
-                cb: file => this.process_file(file).then(image => this.add_image(image, cell) && resolve())
-              })
-            else {
-              this.process_file(file)
-                .then(image => this.add_image(image, cell) && resolve())
-            }
-          } else resolve()
-        })
+        return new Promise((resolve, reject) =>
+          this._events.ondrop ?
+            this.$emit('ondrop', { file, cell, resolve })
+          : this.process_file(file).then(image => this.add_image(image, cell) & resolve())
+        )
       },
       onremove (cell) {
-        return new Promise((resolve, reject) => {
-          if (this._events.onremove)
+        return new Promise((resolve, reject) =>
+          this._events.onremove ?
             this.$emit('onremove', {
               image: cell.image,
-              cb: () => this.remove_image(cell) && resolve()
+              cb: resolve
             })
-          else
-            this.remove_image(cell) & resolve()
-        })
+          : this.remove_image(cell) & resolve()
+        )
       },
       process_file (file) {
-        var image = {}
-
-        return new Promise((resolve, reject) => {
-           let [_file, error] = this.validate(file)
-
-            if (error) reject(this.error(error))
-            else {
-                const reader = new FileReader()
-
-                reader.onload = event => this.$set(image, 'src', event.target.result) && resolve(image)
-
-                reader.readAsDataURL(file)
-            }
-        })
-      },
-      validate (file) {
-          return typeof file === 'object' && file.type ? [file] : [file, { msg: 'Invalid file', file }]
-      },
-      error (msg) {
-          return console.error(msg) && this
+        return new Promise((resolve, reject) =>
+          (reader =>
+            reader.onload = event => resolve({ src: event.target.result }) &
+            reader.readAsDataURL(file)
+          )(new FileReader())
+        )
       },
       add_image (image, cell) {
-        this.images.push(cell.image = image)
-
-        return this
+        this.images[this.images.indexOf(cell.image)] = image
       },
       remove_image (cell) {
         delete this.images[this.images.indexOf(cell.image)]
-
-        return this
       }
-    },
-    components: {
-      Cell
     }
   }
 </script>
