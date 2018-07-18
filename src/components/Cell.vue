@@ -76,7 +76,7 @@
                 if (this.editable)
                     this.process()
                         .$parent.ondropped(event.dataTransfer.files[0], this)
-                        .finally(() => this.unprocess & this.unhighlight)
+                        .finally(() => this.unprocess() & this.unhighlight())
             },
             onremove () {
                 this.process()
