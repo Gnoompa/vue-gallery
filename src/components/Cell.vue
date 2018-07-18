@@ -7,7 +7,7 @@
         @dragover.prevent.stop
     >
         <transition name="fade">
-            <section v-if="image">
+            <section v-if="image.src">
                 <section role="controlls" key="controlls">
                     <button
                         id="remove"
@@ -24,7 +24,7 @@
 <script>
     export default {
         props: {
-            image: false
+            image: Object
         },
         data () {
             return {

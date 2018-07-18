@@ -48,7 +48,7 @@
         this.$set(this.images, this.images.indexOf(cell.image), image)
       },
       remove_image (cell) {
-        this.$delete(this.images, this.images.indexOf(cell.image))
+        this.$set(this.images, this.images.indexOf(cell.image), {})
       }
     }
   }
