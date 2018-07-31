@@ -8,7 +8,8 @@
   export default {
     props: {
       images: Array,
-      editable: Boolean
+      editable: Boolean,
+      emulate_input: Boolean
     },
     computed: {
       payload () {
@@ -38,17 +39,17 @@
       },
       process_file (file) {
         return new Promise((resolve, reject) =>
-          (reader => {
-            reader.onload = event => resolve({ src: event.target.result })
+          (reader =>
+            reader.onload = event => resolve({ src: event.target.result }) &
             reader.readAsDataURL(file)
-          })(new FileReader())
+          )(new FileReader())
         )
       },
       add_image (image, cell) {
-        this.$set(this.images, this.images.indexOf(cell.image), image)
+        this.images[this.images.indexOf(cell.image)] = image
       },
       remove_image (cell) {
-        this.$set(this.images, this.images.indexOf(cell.image), {})
+        delete this.images[this.images.indexOf(cell.image)]
       }
     }
   }

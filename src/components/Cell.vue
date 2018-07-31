@@ -1,6 +1,6 @@
 <template>
     <main
-        :class="{ highlighted, processing, empty }"
+        :class="{ highlighted, processing, empty, clickable }"
         @dragenter="ondragenter"
         @drop.prevent.stop="ondrop"
         @dragleave="ondragleave"
@@ -18,6 +18,10 @@
                 <span :style="styles"></span>
             </section>
         </transition>
+        <transition name="fade">
+            <span v-if="clickable" id="onclick_overlay" @click="onclick"></span>
+        </transition>
+        <input ref="input" type="file" @change="oninputchange">
     </main>
 </template>
 
@@ -43,6 +47,9 @@
             },
             editable () {
                 return this.$parent.editable
+            },
+            clickable () {
+                return this.editable && this.$parent.emulate_input && !this.processing && !this.image.src
             }
         },
         methods: {
@@ -71,6 +78,16 @@
             },
             ondragleave () {
                 this.unhighlight()
+            },
+            onclick () {
+                if (this.clickable) {
+                    this.$refs.input.click()
+                }
+            },
+            oninputchange (event) {
+                this.process()
+                    .$parent.ondropped(event.target.files[0], this)
+                    .finally(() => this.unprocess() & this.unhighlight())
             },
             ondrop (event) {
                 if (this.editable)
@@ -124,6 +141,16 @@
 
     main.highlighted {
         background: rgba(58, 114, 183, 0.24);
+    }
+
+    #onclick_overlay {
+        width: 100%;
+        background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCAxMzY2IDc2OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTM2NiA3Njg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPi5zdDB7ZmlsbDpub25lO3N0cm9rZTojQjRCNEI0O3N0cm9rZS13aWR0aDozMDtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9LnN0MXtmaWxsOm5vbmU7c3Ryb2tlOiMyMDE2MDA7c3Ryb2tlLXdpZHRoOjE1O3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO308L3N0eWxlPjxnIGlkPSJMYXllcl8xIj48L2c+PGcgaWQ9IkxheWVyXzIiPjwvZz48ZyBpZD0iTGF5ZXJfMyI+PC9nPjxnIGlkPSJMYXllcl80Ij48Zz48cGF0aCBjbGFzcz0ic3QwIiBkPSJNNTE0LjQsMjY4LjVIMzYxLjljLTE5LjYsMC0zNS41LDE1LjktMzUuNSwzNS41VjU5OGMwLDE5LjYsMTUuOSwzNS41LDM1LjUsMzUuNUg5MTZjMTkuNiwwLDM1LjUtMTUuOSwzNS41LTM1LjVWMzA0YzAtMTkuNi0xNS45LTM1LjUtMzUuNS0zNS41SDc2Ni4zIi8+PHBhdGggY2xhc3M9InN0MCIgZD0iTTc2Ni4zLDI2OGMwLDAtMzItODkuMy0zNS42LTg5LjNINTUwYy0zLjUsMC0zNS42LDg5LjgtMzUuNiw4OS44Ii8+PGxpbmUgY2xhc3M9InN0MCIgeDE9Ijc2Ni4zIiB5MT0iMjY4LjUiIHgyPSI3NjYuMyIgeTI9IjI2OCIvPjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik01MTQuNCwyNjguNSIvPjwvZz48cGF0aCBjbGFzcz0ic3QxIiBkPSJNODMxLjUsMjAzIi8+PHBhdGggY2xhc3M9InN0MSIgZD0iTTg3OS41LDk4Ii8+PGc+PGxpbmUgY2xhc3M9InN0MCIgeDE9IjEwMDEuMyIgeTE9IjgzLjgiIHgyPSIxMDAxLjMiIHkyPSIyNDkuMiIvPjxsaW5lIGNsYXNzPSJzdDAiIHgxPSI5MTMuNSIgeTE9IjE2Ny44IiB4Mj0iMTA3OSIgeTI9IjE2Ny44Ii8+PC9nPjxjaXJjbGUgY2xhc3M9InN0MCIgY3g9IjY0MC44IiBjeT0iNDM1LjIiIHI9IjE0NS4yIi8+PC9nPjxnIGlkPSJMYXllcl81Ij48L2c+PGcgaWQ9IkxheWVyXzYiPjwvZz48L3N2Zz4=) no-repeat center;
+        transition: .2s;
+    }
+
+    #onclick_overlay:hover {
+        opacity: .8;
     }
 
     main > section {
@@ -192,6 +219,10 @@
     .fade-enter {
         opacity: 0;
         transition: .3s;
+    }
+
+    input[type=file] {
+        display: none;
     }
 
     @-webkit-keyframes processing {

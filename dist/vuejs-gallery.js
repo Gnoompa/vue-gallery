@@ -14,7 +14,8 @@
   var script = {
     props: {
       images: Array,
-      editable: Boolean
+      editable: Boolean,
+      emulate_input: Boolean
     },
     computed: {
       payload: function payload() {
@@ -47,18 +48,17 @@
       process_file: function process_file(file) {
         return new Promise(function (resolve, reject) {
           return function (reader) {
-            reader.onload = function (event) {
-              return resolve({ src: event.target.result });
+            return reader.onload = function (event) {
+              return resolve({ src: event.target.result }) & reader.readAsDataURL(file);
             };
-            reader.readAsDataURL(file);
           }(new FileReader());
         });
       },
       add_image: function add_image(image, cell) {
-        this.$set(this.images, this.images.indexOf(cell.image), image);
+        this.images[this.images.indexOf(cell.image)] = image;
       },
       remove_image: function remove_image(cell) {
-        this.$set(this.images, this.images.indexOf(cell.image), {});
+        delete this.images[this.images.indexOf(cell.image)];
       }
     }
   };
@@ -100,7 +100,7 @@
     var component = (typeof script$$1 === 'function' ? script$$1.options : script$$1) || {};
 
     {
-      component.__file = "/Users/dmitryevdokimenko/Documents/tests/vue-gallery/src/components/Gallery.vue";
+      component.__file = "/Users/gnoompa/Documents/PROJECTS/vue-gallery/src/components/Gallery.vue";
     }
 
     if (!component.render) {
