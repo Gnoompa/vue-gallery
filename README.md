@@ -1,2 +1,2 @@
 # vue-gallery
-Vue gallery APLHA
+NOT SUPPORTED
